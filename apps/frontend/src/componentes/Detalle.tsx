@@ -97,6 +97,25 @@ const TEXTO_ACCION: Record<Accion, string> = {
 };
 
 /**
+ * La clase de cada boton.
+ *
+ * `Record<Accion, string>` por el mismo motivo que {@link TEXTO_ACCION}: si
+ * `openapi.yaml` anade una cuarta accion y `npm run gen` la trae, esto deja de
+ * compilar y hay que decidir como se ve, en vez de que salga sin estilo.
+ *
+ * Las dos que avanzan el expediente —`enviar` y `aprobar`— van en azul solido,
+ * y `rechazar` queda en rojo perfilado. No es simetrico a proposito: en una
+ * ficha con dos botones, que los dos pesen lo mismo obliga a leerlos siempre;
+ * el destructivo se reconoce por el color y se pulsa por decision, no por
+ * inercia.
+ */
+const CLASE_ACCION: Record<Accion, string> = {
+  enviar: 'boton boton--principal',
+  aprobar: 'boton boton--principal',
+  rechazar: 'boton boton--peligro',
+};
+
+/**
  * Formateador de las dos fechas.
  *
  * Se construye UNA vez, a nivel de modulo, y no dentro del componente:
@@ -142,7 +161,7 @@ export function Detalle({
   // se seleccione la primera.
   if (solicitud === null) {
     return (
-      <section aria-labelledby="detalle-titulo">
+      <section aria-labelledby="detalle-titulo" className="tarjeta">
         <h2 id="detalle-titulo">Detalle</h2>
         <p>Elige una solicitud.</p>
       </section>
@@ -155,7 +174,7 @@ export function Detalle({
   const acciones = accionesDeEstado(solicitud.estado);
 
   return (
-    <section aria-labelledby="detalle-titulo">
+    <section aria-labelledby="detalle-titulo" className="tarjeta">
       {/*
         La referencia en el titulo y no solo en la lista de abajo: es el nombre
         accesible de toda la seccion (`aria-labelledby`), asi que un lector de
@@ -225,7 +244,7 @@ export function Detalle({
       {acciones.length === 0 ? (
         <p>Esta solicitud ya esta cerrada.</p>
       ) : (
-        <p>
+        <p className="tarjeta__acciones">
           {acciones.map((accion) => (
             <button
               // `key` por la accion y no por el indice: las acciones son
@@ -237,6 +256,7 @@ export function Detalle({
               // el dia que esto acabe dentro de un formulario, un clic enviaria
               // el formulario ademas de disparar la transicion.
               type="button"
+              className={CLASE_ACCION[accion]}
               disabled={ocupado}
               onClick={() => {
                 onAccion(accion);

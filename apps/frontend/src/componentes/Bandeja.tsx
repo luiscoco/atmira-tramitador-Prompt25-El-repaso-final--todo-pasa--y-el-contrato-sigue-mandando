@@ -50,7 +50,27 @@ interface PropsBandeja {
   readonly onSeleccionar: (id: string) => void;
 }
 
-/** Realce de la fila seleccionada. */
+/**
+ * Realce de la fila seleccionada.
+ *
+ * Sigue aqui, en un `style` en linea, y NO en `estilos.css`.
+ *
+ * Se intento moverlo a una regla `tr[aria-current='true']` durante el paso de
+ * apariencia, que es lo que se hizo con los colores de `EstadoChip`. Lo
+ * revirtio un test: `Bandeja.test.tsx` comprueba que "el realce tambien se ve,
+ * no solo se anuncia" leyendo `fila.style.backgroundColor`, y jsdom no carga
+ * la hoja de estilos —`.style` solo refleja lo que esta en linea—, asi que en
+ * CSS esa garantia deja de poder comprobarse.
+ *
+ * El caso es distinto al del chip: alli el color ES el componente y se
+ * comprueba por `data-estado`. Aqui lo que el test protege es que la seleccion
+ * no dependa SOLO de `aria-current`, y esa es justamente la clase de regresion
+ * que un `style` en linea permite vigilar y una hoja externa no.
+ *
+ * El `:hover` de las filas si vive en `estilos.css`: no colisiona, porque un
+ * estilo en linea gana a una regla de la hoja, que es exactamente lo que se
+ * quiere —el hover no debe pisar a la fila abierta—.
+ */
 const FILA_SELECCIONADA = {
   backgroundColor: '#eef2ff',
   // El fondo solo no basta: quien no distinga bien ese azul muy claro del
@@ -74,14 +94,41 @@ export function Bandeja({
   }
 
   return (
-    <table>
+    /* El envoltorio existe por una sola razon: a anchos de movil, cuatro
+       columnas no caben en 400px y la tabla desbordaba la PAGINA entera, que
+       es el peor sitio donde puede aparecer una barra horizontal. Con esto el
+       scroll es de la tabla y el resto de la pantalla se queda quieto.
+
+       `tabIndex={0}` y `role="group"` no son adorno: una zona que se desplaza
+       tiene que poder desplazarse tambien con el teclado, y para eso necesita
+       poder recibir el foco. Sin el `role`, un contenedor con `tabIndex` es un
+       elemento enfocable sin nombre ni papel, que es justo lo que un lector de
+       pantalla no sabe anunciar. El nombre sale del `aria-label`.
+
+       La estructura de la tabla no cambia: `table > thead/tbody > tr >
+       th[scope=row]` sigue intacta, y con ella todas las consultas por rol. */
+    <div
+      className="bandeja__marco"
+      role="group"
+      aria-label="Solicitudes, desplazable"
+      tabIndex={0}
+    >
+      <table className="bandeja">
       {/*
         El `<caption>` es el nombre accesible de la tabla: es lo que anuncia un
         lector de pantalla al entrar en ella, y lo que permite pedirla por
         nombre desde un test. Un `<h2>` encima no haria ninguna de las dos
         cosas.
+
+        El contador va DENTRO del caption, y no en un `<p>` encima, por eso
+        mismo: asi el numero forma parte del nombre accesible ("Solicitudes
+        12") en vez de ser un texto suelto que queda huerfano al entrar en la
+        tabla. Es un `<span>` aparte solo para que el CSS pueda darle otro
+        tamano; el texto "Solicitudes" no cambia.
       */}
-      <caption>Solicitudes</caption>
+      <caption>
+        Solicitudes <span className="bandeja__contador">{solicitudes.length}</span>
+      </caption>
 
       <thead>
         <tr>
@@ -152,7 +199,8 @@ export function Bandeja({
             </tr>
           );
         })}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   );
 }

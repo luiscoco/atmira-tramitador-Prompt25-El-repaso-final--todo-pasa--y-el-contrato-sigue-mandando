@@ -179,3 +179,369 @@
     border-color: currentColor;
   }
 }
+
+/* ==================================================================== *
+ * LA PAGINA
+ *
+ * Todo lo que sigue es del paso de apariencia, y se rige por las mismas
+ * tres decisiones de la cabecera: CSS plano, variables literales en
+ * `:root` y el atributo del JSX como gancho siempre que ya exista.
+ *
+ * La regla que mas ha condicionado lo de abajo: NINGUN cambio podia
+ * tocar la estructura del DOM que consultan los tests —consultas por rol
+ * y por nombre accesible—, asi que aqui no hay ni un `data-testid`, la
+ * tabla sigue siendo `table > thead/tbody > tr > th[scope=row]`, y la
+ * fila seleccionada se señala con `aria-current`, que ya estaba puesto,
+ * en vez de con una clase nueva.
+ *
+ * Contrastes medidos, no supuestos (mismo criterio que la paleta de los
+ * chips). Texto: minimo WCAG AA 4.5:1. Elementos de interfaz no
+ * textuales: minimo 3:1 (WCAG 1.4.11).
+ *
+ *   concepto                        ratio   minimo
+ *   texto secundario                 5.98     4.5
+ *   enlace de referencia             6.70     4.5
+ *   Aprobar (blanco sobre azul)      6.70     4.5
+ *   Rechazar (texto rojo)            6.47     4.5
+ *   Rechazar (borde rojo)            4.83     3.0
+ *   barra de la fila seleccionada    7.07     3.0
+ *
+ * Dos valores quedan por debajo de 3:1 a proposito, y los dos son
+ * DECORATIVOS: el borde de la tarjeta (1.43) y el separador de filas
+ * (1.24). Ninguno de los dos porta informacion. Lo que agrupa el detalle
+ * no es su borde sino el `<section aria-labelledby>`, y lo que separa una
+ * fila de la siguiente para un lector de pantalla es el marcado de la
+ * tabla. Subirlos a 3:1 dibujaria una rejilla que compite con el unico
+ * elemento de esta pantalla que SI porta color: el chip de estado.
+ * ==================================================================== */
+
+:root {
+  /* Tintas. */
+  --tinta: #111827;
+  --tinta-suave: #5b6472;
+  --enlace: #1d4ed8;
+
+  /* Superficies y lineas. */
+  --pagina-fondo: #f8f9fb;
+  --superficie: #ffffff;
+  --linea: #e5e7eb;
+  --linea-tarjeta: #d4d8de;
+
+  /* El fondo de la fila seleccionada NO es un token: vive en el `style` en
+     linea de `Bandeja.tsx`, por el motivo que se explica alli. Aqui solo
+     esta su indigo, porque lo reutiliza el anillo de foco y asi los dos
+     realces de la tabla —el de seleccion y el de teclado— son el mismo
+     color. */
+  --fila-activa-barra: #4338ca;
+  --fila-hover-fondo: #f3f4f6;
+
+  /* Acciones. */
+  --accion-principal-fondo: #1d4ed8;
+  --accion-principal-fondo-hover: #1e40af;
+  --accion-peligro-tinta: #b91c1c;
+  --accion-peligro-borde: #dc2626;
+  --accion-peligro-fondo-hover: #fef2f2;
+
+  --radio: 8px;
+  --radio-tarjeta: 12px;
+}
+
+body {
+  margin: 0;
+  background: var(--pagina-fondo);
+  color: var(--tinta);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+.pagina {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * La cabecera.
+ * ------------------------------------------------------------------ */
+
+.cabecera {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.cabecera h1 {
+  margin: 0 0 0.25rem;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.cabecera__descripcion {
+  margin: 0;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Las dos columnas.
+ *
+ * `start` en vez del `stretch` por defecto: sin el, la tarjeta del
+ * detalle se estiraria hasta el alto de la tabla —doce filas— y sus
+ * botones acabarian flotando a media pagina.
+ * ------------------------------------------------------------------ */
+
+.disposicion {
+  display: grid;
+  grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Por debajo de 900px, una sola columna y el DETALLE PRIMERO: en un movil
+   la ficha de lo que acabas de pulsar no puede quedar debajo de doce
+   filas de tabla. El orden del DOM no cambia —los tests y el tabulador
+   siguen viendo bandeja y luego detalle—, solo el visual. */
+@media (max-width: 900px) {
+  .disposicion {
+    grid-template-columns: 1fr;
+  }
+
+  .disposicion > .tarjeta {
+    order: -1;
+  }
+
+  /* Con cuatro columnas en un movil, el aire de escritorio deja cada celda
+     en dos lineas. Se recorta el horizontal, que es el que sobra; el
+     vertical se queda porque es lo que hace pulsable la fila con el dedo. */
+  .bandeja thead th,
+  .bandeja tbody th,
+  .bandeja tbody td {
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * La barra de "Recargar" y el aviso de error.
+ * ------------------------------------------------------------------ */
+
+.barra-acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 1rem;
+}
+
+.aviso {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--accion-peligro-borde);
+  border-radius: var(--radio);
+  background: var(--accion-peligro-fondo-hover);
+  color: var(--accion-peligro-tinta);
+}
+
+/* ------------------------------------------------------------------ *
+ * La bandeja.
+ * ------------------------------------------------------------------ */
+
+/* El marco que se desplaza. En escritorio no hace nada —la tabla cabe de
+   sobra—; en movil es lo que evita que la barra horizontal sea de la
+   pagina entera. */
+.bandeja__marco {
+  overflow-x: auto;
+}
+
+.bandeja__marco:focus-visible {
+  outline: 2px solid var(--fila-activa-barra);
+  outline-offset: 2px;
+}
+
+.bandeja {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-tarjeta);
+  /* `border-collapse: collapse` ignora el radio en las celdas; esto
+     recorta las esquinas de la primera y la ultima fila. */
+  overflow: hidden;
+}
+
+/* El `<caption>` se queda: es el nombre accesible de la tabla. Lo unico
+   que cambia es que deja de parecer un titulo centrado y pasa a ser la
+   etiqueta gris de encima. */
+.bandeja caption {
+  padding: 0 0 0.625rem;
+  color: var(--tinta-suave);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.bandeja__contador {
+  color: var(--tinta);
+  font-size: 0.875rem;
+}
+
+.bandeja thead th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--linea);
+  color: var(--tinta-suave);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bandeja tbody th,
+.bandeja tbody td {
+  padding: 0.8125rem 1rem;
+  border-top: 1px solid var(--linea);
+  font-weight: 400;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.bandeja tbody tr:hover {
+  background: var(--fila-hover-fondo);
+}
+
+/* El realce de la fila seleccionada NO esta aqui: sigue en el `style` en
+   linea de `Bandeja.tsx`, que explica por que (un test lo lee con
+   `fila.style.backgroundColor`, y jsdom no carga esta hoja).
+
+   No hace falta protegerlo del `:hover` de arriba: un estilo en linea
+   gana a una regla de la hoja, asi que la fila abierta conserva su fondo
+   al pasar el raton por encima sin que haya que escribir nada. */
+
+/* La referencia se ve como un enlace pero sigue siendo un `<button>`: no
+   navega a ninguna parte, asi que convertirlo en `<a>` mentiria al
+   teclado y al lector de pantalla. */
+.bandeja tbody th button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--enlace);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  /* La referencia no se parte NUNCA. Sin esto, a anchos de movil el
+     navegador rompe por los guiones y "SOL-2026-0003" sale en tres
+     lineas, que ademas de feo deja de leerse como un identificador. Es
+     el texto mas corto de la fila: cabe entero en cualquier ancho. */
+  white-space: nowrap;
+}
+
+.bandeja tbody th button:hover {
+  color: var(--accion-principal-fondo-hover);
+}
+
+/* ------------------------------------------------------------------ *
+ * El detalle, como tarjeta.
+ * ------------------------------------------------------------------ */
+
+.tarjeta {
+  padding: 1.5rem;
+  border: 1px solid var(--linea-tarjeta);
+  border-radius: var(--radio-tarjeta);
+  background: var(--superficie);
+}
+
+.tarjeta h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+}
+
+/* Etiqueta a la izquierda con ancho fijo, valor a la derecha. Un grid de
+   dos columnas y no `dt { float }`: el `<dl>` se queda intacto para el
+   lector de pantalla, que sigue leyendo "Solicitante, Clinica Vallbona"
+   como una unidad. */
+.tarjeta dl {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.625rem 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.tarjeta dt {
+  color: var(--tinta-suave);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tarjeta dd {
+  margin: 0;
+}
+
+.tarjeta__acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * Los botones.
+ * ------------------------------------------------------------------ */
+
+.boton {
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--linea-tarjeta);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.boton:hover:not(:disabled) {
+  background: var(--fila-hover-fondo);
+}
+
+/* Foco visible y con separacion, para que se vea tambien sobre el boton
+   azul, donde un contorno pegado al borde se pierde. */
+.boton:focus-visible,
+.bandeja tbody th button:focus-visible {
+  outline: 2px solid var(--fila-activa-barra);
+  outline-offset: 2px;
+}
+
+/* `ocupado` deshabilita los dos botones del detalle mientras el `POST`
+   esta en vuelo. Sin esto el boton se queda igual y parece que el clic
+   no ha hecho nada. */
+.boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.boton--principal {
+  border-color: var(--accion-principal-fondo);
+  background: var(--accion-principal-fondo);
+  color: #fff;
+}
+
+.boton--principal:hover:not(:disabled) {
+  border-color: var(--accion-principal-fondo-hover);
+  background: var(--accion-principal-fondo-hover);
+}
+
+.boton--peligro {
+  border-color: var(--accion-peligro-borde);
+  color: var(--accion-peligro-tinta);
+}
+
+.boton--peligro:hover:not(:disabled) {
+  background: var(--accion-peligro-fondo-hover);
+}

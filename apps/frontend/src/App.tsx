@@ -22,6 +22,28 @@ import {
 import { Bandeja } from './componentes/Bandeja';
 import { Detalle } from './componentes/Detalle';
 
+/**
+ * La cabecera de la pagina.
+ *
+ * Sale de `App` porque la pintan sus DOS salidas —la de carga y la normal—
+ * y antes estaban escribiendo el `<h1>` cada una por su cuenta. El `<h1>` se
+ * queda exactamente igual: es el nombre accesible de la pagina.
+ *
+ * El texto va en ASCII, como todo lo que acaba en pantalla, salvo el punto
+ * medio de separacion, que es tipografia y no una letra acentuada.
+ */
+function Cabecera() {
+  return (
+    <header className="cabecera">
+      <h1>Tramitador</h1>
+      <p className="cabecera__descripcion">
+        Bandeja de solicitudes · los datos viven en memoria y se restauran al
+        reiniciar el backend
+      </p>
+    </header>
+  );
+}
+
 export function App() {
   /* ---------------------------------------------------------------- *
    * Los datos que vienen de la API.
@@ -292,16 +314,16 @@ export function App() {
   // listas ya se han pedido.
   if (cargando) {
     return (
-      <main>
-        <h1>Tramitador</h1>
+      <main className="pagina">
+        <Cabecera />
         <p>Cargando…</p>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>Tramitador</h1>
+    <main className="pagina">
+      <Cabecera />
 
       {/*
         `role="alert"` para que un lector de pantalla lo anuncie en cuanto
@@ -311,11 +333,16 @@ export function App() {
         Va fuera del `if (cargando)` y no sustituye al contenido: un fallo al
         recargar no tiene por que borrar los datos que ya estaban.
       */}
-      {error !== null && <p role="alert">{error}</p>}
+      {error !== null && (
+        <p role="alert" className="aviso">
+          {error}
+        </p>
+      )}
 
-      <p>
+      <p className="barra-acciones">
         <button
           type="button"
+          className="boton"
           onClick={() => void recargar()}
           disabled={ocupado}
         >
@@ -336,12 +363,24 @@ export function App() {
         vuelo no manda nada al servidor, solo mira otra ficha. Lo que `ocupado`
         evita es el doble `POST`, y eso pasa en el detalle.
       */}
-      <Bandeja
-        solicitudes={solicitudes}
-        tipos={tipos}
-        seleccionada={seleccionada}
-        onSeleccionar={setSeleccionada}
-      />
+      {/*
+        Las dos columnas. Es un `<div>` de presentacion y nada mas: no lleva
+        `role` ni nombre accesible, porque no es una region —lo que ya tiene
+        nombre es la tabla, por su `<caption>`, y el detalle, por su
+        `aria-labelledby`—. Anadirle uno solo meteria un nivel de mas en el
+        arbol que lee el lector de pantalla.
+
+        El orden del DOM es bandeja y luego detalle. En movil se invierte solo
+        el visual, con `order` en CSS, para que la ficha de lo que acabas de
+        pulsar no quede debajo de doce filas.
+      */}
+      <div className="disposicion">
+        <Bandeja
+          solicitudes={solicitudes}
+          tipos={tipos}
+          seleccionada={seleccionada}
+          onSeleccionar={setSeleccionada}
+        />
 
       {/*
         `solicitud` es el estado derivado: se recalcula en cada render a partir
@@ -354,13 +393,14 @@ export function App() {
         `aplicarAccion`. La `void` de la llamada dentro de `<Detalle>` es
         exactamente eso, puesto por escrito.
       */}
-      <Detalle
-        solicitud={solicitudSeleccionada}
-        tipos={tipos}
-        operadores={operadores}
-        ocupado={ocupado}
-        onAccion={(accion) => void aplicarAccion(accion)}
-      />
+        <Detalle
+          solicitud={solicitudSeleccionada}
+          tipos={tipos}
+          operadores={operadores}
+          ocupado={ocupado}
+          onAccion={(accion) => void aplicarAccion(accion)}
+        />
+      </div>
     </main>
   );
 }
