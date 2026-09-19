@@ -1,0 +1,19 @@
+{
+  "name": "@tramitador/backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "//": "`dev` es la unica forma prevista de arrancar el backend en desarrollo. `tsx watch` lee TypeScript sin paso de build (igual que @tramitador/contrato, que exporta el fuente) y reinicia el proceso al guardar. Se apunta a src/servidor.ts y no a src/app.ts a proposito: app.ts construye la app pero no escucha, y por eso los tests pueden importarlo sin dejar un socket abierto.",
+  "scripts": {
+    "dev": "tsx watch src/servidor.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@tramitador/contrato": "*",
+    "fastify": "^5.12.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "tsx": "^4.20.3"
+  }
+}

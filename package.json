@@ -1,0 +1,30 @@
+{
+  "name": "tramitador",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+
+  "//": "`dev` sigue levantando solo el backend. Ya existe `dev:frontend` —apps/frontend tiene su propio servidor de Vite—, pero arrancar los dos con un unico comando necesita un lanzador de procesos en paralelo (concurrently o npm-run-all): `npm run dev --workspaces` los ejecutaria en SERIE, y el `tsx watch` del backend no termina nunca, asi que el frontend no llegaria a arrancar. Mientras esa dependencia no se anada, se abren dos terminales.",
+
+  "scripts": {
+    "dev": "npm run dev:backend",
+    "dev:backend": "npm run dev --workspace @tramitador/backend",
+    "dev:frontend": "npm run dev --workspace @tramitador/frontend",
+    "lint": "eslint .",
+    "verifica:contrato": "npm run verifica:contrato -w @tramitador/contrato",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.1"
+  }
+}

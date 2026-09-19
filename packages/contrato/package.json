@@ -1,0 +1,28 @@
+{
+  "name": "@tramitador/contrato",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+
+  "//": "Sin paso de build: este paquete no compila a dist/. `main` y `exports` apuntan al fuente TypeScript, y quien lo consume (tsx en el backend, Vite en el frontend) ya sabe leer .ts. Un paquete de contrato solo son tipos y dos arrays: montar un tsc + dist/ para eso solo añade un artefacto que se queda obsoleto.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+
+  "files": [
+    "src",
+    "openapi.yaml"
+  ],
+
+  "scripts": {
+    "gen": "openapi-typescript openapi.yaml -o src/tipos.gen.ts",
+    "comprobar": "node scripts/verifica.mjs && tsc --noEmit",
+    "verifica:contrato": "node scripts/verifica.mjs"
+  },
+
+  "devDependencies": {
+    "openapi-typescript": "^7.9.1"
+  }
+}

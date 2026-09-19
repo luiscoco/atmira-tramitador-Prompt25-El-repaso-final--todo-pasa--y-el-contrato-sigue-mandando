@@ -1,0 +1,22 @@
+[
+  {
+    "id": "alta-cuenta",
+    "nombre": "Alta de cuenta",
+    "descripcion": "Apertura de una cuenta nueva para un cliente."
+  },
+  {
+    "id": "mod-datos",
+    "nombre": "Modificacion de datos",
+    "descripcion": "Cambio de los datos identificativos o de contacto de un cliente ya existente."
+  },
+  {
+    "id": "alta-producto",
+    "nombre": "Alta de producto",
+    "descripcion": "Contratacion de un producto adicional sobre una cuenta ya abierta."
+  },
+  {
+    "id": "baja-servicio",
+    "nombre": "Baja de servicio",
+    "descripcion": "Cancelacion de un servicio contratado, con efecto al cierre del periodo en curso."
+  }
+]

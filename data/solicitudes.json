@@ -1,0 +1,122 @@
+[
+  {
+    "id": "3f2a9c14-8b7d-4e5a-9f01-6c2d5e8a4b3f",
+    "referencia": "SOL-2026-0001",
+    "tipo": "alta-cuenta",
+    "solicitante": "Aguas del Norte S.L.",
+    "estado": "aprobada",
+    "operador": "op-0042",
+    "creadaEn": "2026-01-12T08:32:11Z",
+    "actualizadaEn": "2026-01-15T11:04:27Z"
+  },
+  {
+    "id": "b1d47e30-2c65-4a18-9d72-0af3c9e51b84",
+    "referencia": "SOL-2026-0002",
+    "tipo": "mod-datos",
+    "solicitante": "Talleres Ribera S.A.",
+    "estado": "rechazada",
+    "operador": "op-0113",
+    "creadaEn": "2026-01-20T10:05:44Z",
+    "actualizadaEn": "2026-01-22T09:18:03Z"
+  },
+  {
+    "id": "5e8c0a77-91fb-4d26-8c3e-7b4d2f60a915",
+    "referencia": "SOL-2026-0003",
+    "tipo": "alta-producto",
+    "solicitante": "Distribuciones Olmeda S.L.",
+    "estado": "enviada",
+    "operador": "op-0042",
+    "creadaEn": "2026-02-03T14:27:09Z",
+    "actualizadaEn": "2026-02-04T08:51:36Z"
+  },
+  {
+    "id": "c4a6b258-3d90-4f71-a0e5-18cf7b3d9204",
+    "referencia": "SOL-2026-0004",
+    "tipo": "baja-servicio",
+    "solicitante": "Panificadora La Espiga S.C.",
+    "estado": "borrador",
+    "operador": null,
+    "creadaEn": "2026-02-11T09:14:32Z",
+    "actualizadaEn": "2026-02-11T09:14:32Z"
+  },
+  {
+    "id": "9a03f5c1-6e48-4b3d-8172-5d9e0c4a7f36",
+    "referencia": "SOL-2026-0005",
+    "tipo": "alta-cuenta",
+    "solicitante": "Logistica Monteverde S.A.",
+    "estado": "aprobada",
+    "operador": "op-0207",
+    "creadaEn": "2026-02-18T07:46:50Z",
+    "actualizadaEn": "2026-02-24T13:22:14Z"
+  },
+  {
+    "id": "7d51e9b4-0a27-4c68-9e13-2f6b8d05c74a",
+    "referencia": "SOL-2026-0006",
+    "tipo": "mod-datos",
+    "solicitante": "Clinica Dental Sotorres S.L.",
+    "estado": "enviada",
+    "operador": null,
+    "creadaEn": "2026-03-02T16:09:05Z",
+    "actualizadaEn": "2026-03-02T16:41:58Z"
+  },
+  {
+    "id": "e2704fa8-5b13-4d9c-86a0-3c1e7b249d65",
+    "referencia": "SOL-2026-0007",
+    "tipo": "alta-producto",
+    "solicitante": "Ceramicas Valdearenas S.L.",
+    "estado": "borrador",
+    "operador": null,
+    "creadaEn": "2026-03-15T11:53:47Z",
+    "actualizadaEn": "2026-03-15T11:53:47Z"
+  },
+  {
+    "id": "1c98b607-4e2a-4f35-b7d8-90a6c3e51f28",
+    "referencia": "SOL-2026-0008",
+    "tipo": "baja-servicio",
+    "solicitante": "Editorial Puente Viejo S.L.",
+    "estado": "rechazada",
+    "operador": "op-0113",
+    "creadaEn": "2026-04-07T09:31:22Z",
+    "actualizadaEn": "2026-04-10T15:07:40Z"
+  },
+  {
+    "id": "8b3d21e5-7c4f-4a60-92b1-6e0d5a8c37f9",
+    "referencia": "SOL-2026-0009",
+    "tipo": "alta-cuenta",
+    "solicitante": "Viveros Camporramos S.C.",
+    "estado": "enviada",
+    "operador": "op-0331",
+    "creadaEn": "2026-05-21T12:18:36Z",
+    "actualizadaEn": "2026-05-22T10:02:19Z"
+  },
+  {
+    "id": "0f6a4c93-8d15-4b72-a3e9-47c2b60d8e51",
+    "referencia": "SOL-2026-0010",
+    "tipo": "mod-datos",
+    "solicitante": "Transportes Herrerias S.A.",
+    "estado": "aprobada",
+    "operador": "op-0207",
+    "creadaEn": "2026-06-09T08:04:55Z",
+    "actualizadaEn": "2026-06-16T17:39:12Z"
+  },
+  {
+    "id": "6c25d8f0-3b91-4e47-85a2-1d7f9c04b6e3",
+    "referencia": "SOL-2026-0011",
+    "tipo": "alta-producto",
+    "solicitante": "Textiles Almadraba S.L.",
+    "estado": "borrador",
+    "operador": null,
+    "creadaEn": "2026-07-01T10:26:08Z",
+    "actualizadaEn": "2026-07-01T10:26:08Z"
+  },
+  {
+    "id": "d9b40c62-1a58-4e73-b6f4-28e0a5c19d47",
+    "referencia": "SOL-2026-0012",
+    "tipo": "baja-servicio",
+    "solicitante": "Bodegas Pena Alcor S.L.",
+    "estado": "rechazada",
+    "operador": "op-0331",
+    "creadaEn": "2026-08-12T13:47:21Z",
+    "actualizadaEn": "2026-08-14T09:15:33Z"
+  }
+]

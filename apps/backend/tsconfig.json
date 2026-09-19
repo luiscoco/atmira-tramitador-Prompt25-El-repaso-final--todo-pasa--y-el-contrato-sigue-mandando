@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Backend: solo runtime de Node, sin APIs de navegador (nada de DOM aquí,
+    // así `document` o `window` dan error de compilación en vez de en producción).
+    "lib": ["ES2022"],
+
+    // Restringe los @types cargados automáticamente. Sin esto, TS incluye todo
+    // lo que haya bajo node_modules/@types, incluidos los de otro workspace.
+    // Requiere instalar @types/node.
+    "types": ["node"],
+
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "sourceMap": true
+  },
+  "include": ["src"]
+}

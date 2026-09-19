@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tramitador</title>
+  </head>
+  <body>
+    <!--
+      El unico elemento del HTML. React monta aqui dentro (ver src/main.tsx) y
+      todo lo demas lo pinta el cliente.
+    -->
+    <div id="root"></div>
+
+    <!--
+      Este <script> es el punto de entrada de VERDAD del proyecto.
+
+      En Vite el grafo de modulos no arranca en un fichero de configuracion:
+      arranca en el index.html, que por eso no vive en public/ sino en la raiz
+      del proyecto. Vite lo sirve, lee este src, y a partir de ahi resuelve
+      imports, transforma el TypeScript y el JSX y engancha la recarga en
+      caliente. En `vite build`, el mismo html es la entrada del bundle y este
+      src se sustituye por el fichero con hash que se escriba en dist/.
+
+      `type="module"` no es decorativo: sin el, el navegador no aceptaria los
+      `import` del codigo y el desarrollo sin empaquetado previo no existiria.
+    -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "@tramitador/frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "//": "Vite cumple aqui dos papeles que conviene no confundir: en `dev` es un SERVIDOR (el que atiende al navegador en el 5173 y hace de proxy hacia el backend), y en `build` es un EMPAQUETADOR (escribe dist/ y se va). El proxy de vite.config.ts solo existe en el primero; lo que sirva dist/ en produccion tendra que resolver /api por su cuenta.",
+  "scripts": {
+    "dev": "vite",
+    "//build": "`tsc --noEmit` antes de `vite build` a proposito: Vite transpila con esbuild, que BORRA los tipos sin comprobarlos. Sin esta primera mitad, un error de tipos no rompe el build, solo la aplicacion en runtime.",
+    "build": "tsc --noEmit && vite build",
+    "//preview": "Sirve dist/ tal cual, sin proxy y sin recarga. Util para ver el build de verdad; no es un servidor de produccion.",
+    "preview": "vite preview",
+    "comprobar": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tramitador/contrato": "*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.0",
+    "vite": "^8.3.0"
+  }
+}

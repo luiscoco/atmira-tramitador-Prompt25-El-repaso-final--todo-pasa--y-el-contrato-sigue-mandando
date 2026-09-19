@@ -1,0 +1,84 @@
+{
+  // Configuración compartida por todos los workspaces del monorepo.
+  // Nadie compila con este fichero directamente: cada app/paquete lo extiende
+  // y añade solo lo suyo (entradas, salidas, lib, jsx...).
+  "compilerOptions": {
+    /* ---------- Lenguaje y salida ---------- */
+
+    // ES2022 = Node 18+ y todos los navegadores modernos. Lo relevante:
+    // TS deja de "bajar" async/await, class fields, #private y .at() a helpers,
+    // así que el JS emitido se parece al fuente y los stack traces son legibles.
+    // Además habilita useDefineForClassFields por defecto (semántica real de
+    // campos de clase, no asignación en el constructor).
+    "target": "ES2022",
+
+    "module": "ESNext",
+
+    // Cómo se resuelve un `import "x"`. "bundler" imita lo que hacen Vite/esbuild:
+    // lee `exports` del package.json (como Node) pero NO exige escribir la
+    // extensión en los imports relativos (`./util` en vez de `./util.js`).
+    // OJO: eso es válido para código que pasa por un bundler o por tsx. Si algún
+    // día el backend se ejecuta con `node dist/index.js` sobre el JS emitido tal
+    // cual, esos imports sin extensión fallan en runtime y habría que cambiar
+    // este workspace a "NodeNext" (que sí obliga a poner la extensión).
+    "moduleResolution": "bundler",
+
+    // Trata todo fichero con import/export como módulo ESM aunque no los tenga
+    // todavía. Evita el clásico "no puedo redeclarar X" por colisión de globales
+    // cuando un fichero aún no exporta nada.
+    "moduleDetection": "force",
+
+    "resolveJsonModule": true,
+
+    /* ---------- Reglas de tipos estrictas ---------- */
+
+    // Paraguas que activa de golpe strictNullChecks, noImplicitAny,
+    // strictFunctionTypes, strictPropertyInitialization, etc.
+    // Lo que más se nota: null y undefined dejan de ser asignables a todo,
+    // y hay que estrecharlos explícitamente antes de usar el valor.
+    "strict": true,
+
+    // Error en variables/imports declarados y nunca usados. Barato, y evita que
+    // se quede un import muerto tras un refactor.
+    "noUnusedLocals": true,
+
+    // Igual con parámetros de función. Para los que sí quieres ignorar
+    // (firmas impuestas por una interfaz), el escape es prefijarlos con "_":
+    // `(_req, res) => ...` no da error.
+    "noUnusedParameters": true,
+
+    // Error si un `case` con cuerpo no termina en break/return/throw y cae al
+    // siguiente. El fallthrough intencionado se sigue permitiendo apilando
+    // `case` vacíos (`case "a": case "b": ...`), que es la forma legible.
+    "noFallthroughCasesInSwitch": true,
+
+    // El grande: acceder por índice (arr[i], obj[clave]) devuelve `T | undefined`
+    // en vez de `T`. TS no sabe si ese índice existe, y con este flag deja de
+    // fingir que sí. Obliga a comprobar antes de usar el resultado.
+    // No afecta a claves declaradas literalmente en el tipo, solo a índices
+    // arbitrarios y a firmas de índice ([k: string]: T).
+    "noUncheckedIndexedAccess": true,
+
+    /* ---------- Interoperabilidad de módulos ---------- */
+
+    // Prohíbe que TS "adivine" qué imports son solo de tipos y los borre por su
+    // cuenta: lo que escribes es exactamente lo que se emite. En la práctica te
+    // obliga a marcar `import type { Foo }` / `import { type Foo, bar }` cuando
+    // el símbolo solo se usa como tipo. Imprescindible con bundlers, porque
+    // elimina el borrado ambiguo que rompe side-effects de import.
+    "verbatimModuleSyntax": true,
+
+    // Garantiza que cada fichero se puede transpilar por separado, sin ver el
+    // resto del proyecto (que es como trabajan esbuild/swc/Vite). Prohíbe lo
+    // que necesita información global: re-export de tipos sin `export type`,
+    // `const enum`, namespaces con valores.
+    "isolatedModules": true,
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // No revisa los .d.ts de node_modules. No relaja tu código: solo evita
+    // pagar (y sufrir) los errores de tipos de dependencias de terceros.
+    "skipLibCheck": true
+  }
+}

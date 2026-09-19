@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Frontend: APIs de navegador. DOM.Iterable es lo que permite recorrer
+    // NodeList, FormData o URLSearchParams con for...of y spread.
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+    // JSX sin `import React`: el compilador inyecta el runtime automático
+    // (react/jsx-runtime). Es lo correcto para React 17+.
+    "jsx": "react-jsx",
+
+    // Aquí TS solo hace type-check; quien genera el bundle es el bundler.
+    // Se comprueba con `tsc --noEmit` y no se escribe ningún .js.
+    "noEmit": true
+  },
+
+  // `vite.config.ts` va en la lista aunque no esté bajo src/ y aunque no forme
+  // parte de la aplicación: es TypeScript, y si no se incluye aquí nadie lo
+  // comprueba —un `port: "5173"` con comillas o una opción de proxy mal escrita
+  // solo se descubrirían al arrancar—. Lo lee Vite, que lo transpila por su
+  // cuenta con esbuild; esta entrada solo añade el type-check.
+  "include": ["src", "vite.config.ts"]
+}

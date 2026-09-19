@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Este paquete no emite nada: no hay dist/, el consumidor compila el fuente.
+    // tsc aquí solo sirve para comprobar (editor y `npm run comprobar`).
+    "noEmit": true,
+
+    // Ni DOM ni Node: el contrato son tipos y dos arrays de strings, no toca
+    // ninguna API de plataforma. Si algún día alguien mete un `fetch` aquí,
+    // dará error de compilación, que es exactamente lo que se quiere.
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,181 @@
+/*
+ * La primera hoja de estilos del proyecto.
+ *
+ * Hasta ahora no habia ninguna —`index.html` no cargaba nada y `EstadoChip`
+ * llevaba los colores en un `style` en linea—, y `20. BANDEJA.md` lo dejo
+ * anotado como deuda. Esto la paga.
+ *
+ * Tres decisiones que explican todo lo que sigue:
+ *
+ *   1. CSS plano. Ni Tailwind ni CSS-in-JS. La hoja se lee entera en un
+ *      minuto, no anade ninguna dependencia al build y se puede abrir en el
+ *      inspector del navegador y reconocer lo que pone. Un proyecto que hoy
+ *      tiene un componente con estilo no necesita un sistema de diseno.
+ *
+ *   2. Variables planas en `:root`, con nombres largos y literales
+ *      (`--chip-aprobada-fondo`). No hay capas de indireccion ni escalas
+ *      abstractas: se busca el nombre del estado y se encuentra su color. El
+ *      dia que la paleta se repita en otro sitio, se factorizara; adelantarlo
+ *      ahora seria inventar una jerarquia para cuatro colores.
+ *
+ *   3. El gancho es `data-estado`, no una clase por estado. El atributo ya
+ *      estaba en el JSX desde el paso anterior, puesto exactamente para esto,
+ *      y evita tener que mantener a la vez el identificador del contrato y una
+ *      clase `chip-estado--aprobada` que diga lo mismo.
+ *
+ * Se carga una sola vez, desde `main.tsx`.
+ *
+ * Acentos: los comentarios van acentuados; lo que acabe en pantalla, no. Aqui
+ * no acaba nada en pantalla, asi que la regla no aplica a ningun valor.
+ */
+
+:root {
+  /* --------------------------------------------------------------- *
+   * La forma del chip. Es una sola, comun a los cuatro estados: lo que
+   * cambia entre ellos es el color y el icono, nunca el tamano.
+   * --------------------------------------------------------------- */
+
+  --chip-radio: 9999px;
+  --chip-relleno: 0.125rem 0.5rem;
+  --chip-texto-tamano: 0.8125rem;
+  --chip-separacion-icono: 0.375rem;
+  --chip-icono-tamano: 0.875em;
+
+  /* --------------------------------------------------------------- *
+   * La paleta, un trio por estado: fondo, tinta y borde.
+   *
+   * El borde no es adorno. Es la senal que dibuja la silueta del chip
+   * cuando el fondo desaparece —impresion en blanco y negro, alto
+   * contraste del sistema—, y por eso es un tono bastante mas oscuro que
+   * el fondo y no una version suya un poco mas subida.
+   *
+   * Los pares elegidos: los dos finales en verde y rojo, `enviada` en
+   * azul (esta en juego, esperando decision) y `borrador` en gris, que
+   * es el unico que todavia no ha salido de las manos de quien la creo.
+   *
+   * Los numeros, medidos y no supuestos (ver 21. ESTILOS.md):
+   *
+   *   estado      tinta/fondo   borde/pagina blanca   borde/fondo
+   *   borrador       8.33             4.83               3.90
+   *   enviada        7.15             5.17               4.24
+   *   aprobada       6.49             5.02               4.57
+   *   rechazada      6.80             4.83               3.95
+   *
+   * La primera columna es texto: el minimo de WCAG AA es 4.5:1 y la peor
+   * saca 6.49. Las otras dos son un elemento de interfaz que no es texto:
+   * ahi el minimo es 3:1 (WCAG 1.4.11) y tiene que cumplirse por partida
+   * doble, contra la pagina y contra el propio relleno del chip. La
+   * primera version de esta paleta usaba bordes claros (el verde se
+   * quedaba en 1.74:1 contra el blanco) y por eso se oscurecieron.
+   * --------------------------------------------------------------- */
+
+  --chip-borrador-fondo: #e5e7eb;
+  --chip-borrador-tinta: #374151;
+  --chip-borrador-borde: #6b7280;
+
+  --chip-enviada-fondo: #dbeafe;
+  --chip-enviada-tinta: #1e40af;
+  --chip-enviada-borde: #2563eb;
+
+  --chip-aprobada-fondo: #dcfce7;
+  --chip-aprobada-tinta: #166534;
+  --chip-aprobada-borde: #15803d;
+
+  --chip-rechazada-fondo: #fee2e2;
+  --chip-rechazada-tinta: #991b1b;
+  --chip-rechazada-borde: #dc2626;
+}
+
+/* ------------------------------------------------------------------ *
+ * El chip.
+ * ------------------------------------------------------------------ */
+
+.chip-estado {
+  /*
+   * `inline-flex` y no `inline-block`: hace falta alinear el icono con el
+   * texto por su centro, y con `inline-block` el <svg> se apoyaria en la
+   * linea base y quedaria un par de pixeles bajo.
+   */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--chip-separacion-icono);
+
+  padding: var(--chip-relleno);
+  border: 1px solid;
+  border-radius: var(--chip-radio);
+
+  font-size: var(--chip-texto-tamano);
+  line-height: 1.4;
+
+  /* El chip cabe en una celda estrecha de la bandeja sin partirse en dos. */
+  white-space: nowrap;
+}
+
+/*
+ * Un bloque por estado, y nada mas que los tres colores.
+ *
+ * `border-color` va aqui y el `border: 1px solid` de arriba se deja sin color
+ * a proposito: asi la anchura y el estilo del borde se deciden una vez, y
+ * anadir un quinto estado es anadir un bloque de tres lineas.
+ */
+
+.chip-estado[data-estado='borrador'] {
+  background-color: var(--chip-borrador-fondo);
+  color: var(--chip-borrador-tinta);
+  border-color: var(--chip-borrador-borde);
+}
+
+.chip-estado[data-estado='enviada'] {
+  background-color: var(--chip-enviada-fondo);
+  color: var(--chip-enviada-tinta);
+  border-color: var(--chip-enviada-borde);
+}
+
+.chip-estado[data-estado='aprobada'] {
+  background-color: var(--chip-aprobada-fondo);
+  color: var(--chip-aprobada-tinta);
+  border-color: var(--chip-aprobada-borde);
+}
+
+.chip-estado[data-estado='rechazada'] {
+  background-color: var(--chip-rechazada-fondo);
+  color: var(--chip-rechazada-tinta);
+  border-color: var(--chip-rechazada-borde);
+}
+
+/* ------------------------------------------------------------------ *
+ * El icono.
+ * ------------------------------------------------------------------ */
+
+.chip-estado__icono {
+  /*
+   * Medido en `em` y no en pixeles: el icono crece y mengua con el texto del
+   * chip, asi que quien tenga el navegador a 150% lo ve escalado igual que las
+   * letras, en vez de un icono diminuto al lado de un texto grande.
+   */
+  width: var(--chip-icono-tamano);
+  height: var(--chip-icono-tamano);
+
+  /*
+   * Que no lo encoja el flex si la celda va justa. Sin esto, el icono seria lo
+   * primero en aplastarse, y es justamente la senal que no puede perderse.
+   */
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Alto contraste del sistema.
+ *
+ * Windows en modo alto contraste (y el `forced-colors` equivalente de otros
+ * sistemas) descarta los colores de fondo y de texto y los sustituye por los
+ * suyos. Ahi el chip pierde SU color, que es exactamente el escenario que el
+ * icono y el texto estan para cubrir: se siguen distinguiendo los cuatro
+ * estados sin un solo color propio. Lo unico que hay que pedir es que el borde
+ * siga siendo visible, tomando el color de texto que imponga el sistema.
+ * ------------------------------------------------------------------ */
+
+@media (forced-colors: active) {
+  .chip-estado {
+    border-color: currentColor;
+  }
+}
